@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+    body {
+        background: #f6f7fb;
+    }
+    .settings-wrapper {
+        max-width: 420px;
+        margin: 2.5rem auto 0 auto;
+        background: #fff;
+        border-radius: 1.1rem;
+        box-shadow: 0 2px 16px rgba(99,102,241,0.07);
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        position: relative;
+        animation: fadeInSettings 0.5s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes fadeInSettings {
+        from { opacity: 0; transform: translateY(24px) scale(0.98);}
+        to   { opacity: 1; transform: translateY(0) scale(1);}
+    }
+    .settings-header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    .settings-heading {
+        font-size: 1.5rem;
+        letter-spacing: 0.03em;
+        font-weight: 800;
+        color: #5b21b6;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .back-home-btn {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(90deg, #6366f1 0%, #7c3aed 100%);
+        color: #fff;
+        border: none;
+        border-radius: 1.2em;
+        padding: 0.4em 1.3em;
+        font-size: 1em;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+        transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        text-decoration: none;
+    }
+    .back-home-btn:hover {
+        background: linear-gradient(90deg, #7c3aed 0%, #6366f1 100%);
+        box-shadow: 0 4px 16px rgba(99,102,241,0.13);
+        transform: translateY(-50%) scale(1.03);
+        color: #fff;
+        text-decoration: none;
+    }
+    .back-home-btn svg {
+        width: 1.1em;
+        height: 1.1em;
+        margin-right: 0.3em;
+        vertical-align: middle;
+    }
+    .settings-section-title {
+        font-size: 1.13rem;
+        font-weight: 800;
+        color: #5b21b6;
+        margin-bottom: 0.7rem;
+        letter-spacing: 0.01em;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        background: none;
+        -webkit-background-clip: unset;
+        -webkit-text-fill-color: unset;
+        background-clip: unset;
+    }
+    .settings-section-title svg {
+        width: 1.2em;
+        height: 1.2em;
+        color: #6366f1;
+        flex-shrink: 0;
+    }
+    .settings-row {
+        display: flex;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+    }
+    .settings-col {
+        flex: 1 1 160px;
+        min-width: 0;
+        background: none;
+        border-radius: 0.5rem;
+        box-shadow: none;
+        padding: 0;
+        margin-bottom: 0;
+    }
+    .field-group {
+        margin-bottom: 0.7rem;
+    }
+    .field-group label {
+        font-weight: 600;
+        color: #6366f1;
+        margin-bottom: 0.2rem;
+        font-size: 0.98em;
+        letter-spacing: 0.01em;
+        display: block;
+    }
+    .field-group select,
+    .field-group input[type="text"],
+    .field-group input[type="password"] {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 0.6em 0.9em;
+        border: 1.2px solid #c7d2fe;
+        border-radius: 0.5em;
+        font-size: 1em;
+        background: #f8fafc;
+        color: #1e293b;
+        margin-bottom: 0.2em;
+        box-shadow: none;
+        outline: none;
+        transition: border 0.15s, box-shadow 0.15s;
+    }
+    .field-group select:focus,
+    .field-group input[type="text"]:focus,
+    .field-group input[type="password"]:focus {
+        border: 1.5px solid #6366f1;
+        background: #f0f4ff;
+    }
+    .toggle-switch {
+        display: flex;
+        align-items: center;
+        gap: 0.7em;
+        margin-bottom: 0.7em;
+        user-select: none;
+    }
+    .toggle-switch label {
+        font-weight: 600;
+        color: #6366f1;
+        font-size: 1em;
+        margin: 0;
+        cursor: pointer;
+    }
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 38px;
+        height: 22px;
+        margin-right: 0.5em;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: #e5e7eb;
+        border-radius: 22px;
+        transition: background 0.2s;
+    }
+    .switch input:checked + .slider {
+        background: #6366f1;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 3px;
+        bottom: 3px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.2s;
+        box-shadow: 0 1px 4px rgba(99,102,241,0.09);
+    }
+    .switch input:checked + .slider:before {
+        transform: translateX(16px);
+    }
+    .modal-buttons {
+        margin-top: 1.2rem;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .update-button {
+        padding: 0.6em 1.7em;
+        font-size: 1em;
+        border-radius: 1.5em;
+        font-weight: 700;
+        background: linear-gradient(90deg, #6366f1 0%, #7c3aed 100%);
+        color: #fff;
+        border: none;
+        box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+        cursor: pointer;
+        transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+    .update-button:hover {
+        background: linear-gradient(90deg, #7c3aed 0%, #6366f1 100%);
+        box-shadow: 0 4px 16px rgba(99,102,241,0.13);
+        transform: translateY(-1px) scale(1.03);
+    }
+    .settings-divider {
+        border: none;
+        border-top: 1px solid #e0e7ff;
+        margin: 1.2rem 0 1.2rem 0;
+    }
+    @media (max-width: 600px) {
+        .settings-wrapper {
+            padding: 1.1rem 0.5rem 1.1rem 0.5rem;
+        }
+        .settings-header-bar {
+            margin-bottom: 1rem;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-row" style="margin-bottom: 0.5rem;">
+            <div class="logo-stack">
+                <img src="{{ url_for('static', filename='cei-social.png') }}" alt="Logo" class="logo-img">
+                <img src="{{ url_for('static', filename='CEI-QA-RPA-Logo-Trans.png') }}" alt="Logo" class="logo-img">
+            </div>
+            <div class="settings-header-bar">
+                <a href="{{ url_for('index') }}" class="back-home-btn" title="Back to Home">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Home
+                </a>
+                <h1 class="settings-heading">Settings</h1>
+            </div>
+        </div>
+
+        <form id="settings-form" method="POST" action="{{ url_for('settings') }}">
+            <div class="settings-wrapper">
+                <!-- Agent Settings -->
+                <div>
+                    <div class="settings-section-title">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor"/>
+                            <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-linecap="round"/>
+                        </svg>
+                        Agent Settings
+                    </div>
+                    <div class="settings-row">
+                        <div class="settings-col">
+                            <div class="field-group">
+                                <label for="agent-llm">Agent LLM</label>
+                                <select id="agent-llm" name="agent_llm" required>
+                                    <option value="gemini" {{ 'selected' if settings.agent_llm == 'gemini' else '' }}>Gemini</option>
+                                    <option value="azure_openai" {{ 'selected' if settings.agent_llm == 'azure_openai' else '' }}>Azure OpenAI</option>
+                                    <option value="openai" {{ 'selected' if settings.agent_llm == 'openai' else '' }}>OpenAI</option>
+                                    <option value="ollama" {{ 'selected' if settings.agent_llm == 'ollama' else '' }}>Ollama</option>
+                                   
+                                </select>
+                            </div>
+                            <div class="field-group" id="agent-llm-args"></div>
+                        </div>
+                        <div class="settings-col">
+                            <div class="field-group">
+                                <label for="planner-llm">Planner LLM</label>
+                                <select id="planner-llm" name="planner_llm" required>
+                                    <option value="gemini" {{ 'selected' if settings.planner_llm == 'gemini' else '' }}>Gemini</option>
+                                    <option value="azure_openai" {{ 'selected' if settings.planner_llm == 'azure_openai' else '' }}>Azure OpenAI</option>
+                                    <option value="openai" {{ 'selected' if settings.planner_llm == 'openai' else '' }}>OpenAI</option>
+                                    <option value="ollama" {{ 'selected' if settings.planner_llm == 'ollama' else '' }}>Ollama</option>
+                                </select>
+                            </div>
+                            <div class="field-group" id="planner-llm-args"></div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="settings-divider">
+                <!-- Browser Settings -->
+                <div>
+                    <div class="settings-section-title">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor"/>
+                            <path d="M7 7h.01M12 7h.01M17 7h.01M7 12h.01M12 12h.01M17 12h.01M7 17h.01M12 17h.01M17 17h.01" stroke="currentColor" stroke-linecap="round"/>
+                        </svg>
+                        Browser Settings
+                    </div>
+                    <div>
+                        <div class="toggle-switch">
+                            <label class="switch">
+                                <input type="checkbox" id="headless-mode" name="headless_mode" value="true" {% if settings.headless_mode %}checked{% endif %}>
+                                <span class="slider"></span>
+                            </label>
+                            <label for="headless-mode">Headless Mode</label>
+                        </div>
+                        <div class="toggle-switch">
+                            <label class="switch">
+                                <input type="checkbox" id="highlight-elements" name="highlight_elements" value="true" {% if settings.highlight_elements %}checked{% endif %}>
+                                <span class="slider"></span>
+                            </label>
+                            <label for="highlight-elements">Highlight Elements</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="update-button">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="{{ url_for('static', filename='settings.js') }}"></script>
+    <script>
+    window.agentLlmSettings = {{ agentLlmSettings|tojson }};
+    window.plannerLlmSettings = {{ plannerLlmSettings|tojson }};
+    </script>
+</body>
+</html>

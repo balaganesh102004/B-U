@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Run History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='history.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Test Run History</h1>
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>Test Run ID</th>
+                    <th>Status</th>
+                    <th>Total Duration</th>
+                    <th>Total Tokens (approx)</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>View</th>
+                    <th>Delete</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% for run in runs %}
+                <tr id="row-{{ run.id }}">
+                    <td>{{ run.id }}</td>
+                    <td>{{ run.status }}</td>
+                    <td>{{ run.duration }}</td>
+                    <td>{{ run.tokens }}</td>
+                    <td>{{ run.start }}</td>
+                    <td>{{ run.end }}</td>
+                    <td>
+                        <a href="{{ url_for('history_report', filename=run.file) }}" target="_blank">View</a>
+                    </td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteRun('{{ run.file }}', 'row-{{ run.id }}')">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <button onclick="window.location.href='/'" class="run-button">Back to Home</button>
+    </div>
+    <script>
+    function deleteRun(filename, rowId) {
+        if (!confirm("Are you sure you want to delete this test run?")) return;
+        fetch(`/history/delete/${filename}`, {method: 'POST'})
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(rowId).remove();
+                } else {
+                    alert("Failed to delete: " + (data.error || "Unknown error"));
+                }
+            });
+    }
+    </script>
+</body>
+</html>

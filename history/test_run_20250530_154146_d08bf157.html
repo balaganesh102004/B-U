@@ -1,0 +1,57 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Test Run Report</title>
+        <link rel="stylesheet" type="text/css" href="/static/test_result.css">
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const headers = document.querySelectorAll(".accordion-header");
+            headers.forEach(header => {
+                header.addEventListener("click", function () {
+                    const content = this.nextElementSibling;
+                    content.style.display = content.style.display === "block" ? "none" : "block";
+                });
+            });
+
+            const modal = document.getElementById("screenshotModal");
+            const modalImg = document.getElementById("modalImage");
+            const closeModal = document.getElementsByClassName("close")[0];
+
+            document.querySelectorAll(".screenshot").forEach(img => {
+                img.addEventListener("click", function () {
+                    modal.style.display = "block";
+                    modalImg.src = this.src;
+                });
+            });
+
+            closeModal.onclick = function () {
+                modal.style.display = "none";
+            };
+
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+        });
+        </script>
+    </head>
+    <body>
+    
+        <h1>Test Run Report</h1>
+        <!-- Modal for screenshots -->
+        <div id="screenshotModal" class="modal">
+            <span class="close">&times;</span>
+            <img id="modalImage" class="modal-content">
+        </div>
+    <div class="summary">
+        <h2>Overall Test Run Summary</h2>
+        <p><strong>Test Run ID:</strong> d08bf157</p>
+        <p><strong>Status:</strong> <span class="status-pill { 'status-success' if overall_status == 'Success' else 'status-failure' }">{ overall_status }</span></p>
+        <p><strong>Total Duration:</strong> 0 seconds</p>
+        <p><strong>Total Tokens:</strong> 0</p>
+        <p><strong>Start Time:</strong> N/A</p>
+        <p><strong>End Time:</strong> N/A</p>
+    </div>
+    </body></html>

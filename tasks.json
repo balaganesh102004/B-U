@@ -1,0 +1,27 @@
+[
+    {
+        "ID": 5,
+        "Task name": "Adding phone to the cart.",
+        "Task description": "Go to https://www.flipkart.com. Search for Samsung Galaxy S23 ultra. From the search results, identify a listing for the Samsung Galaxy S23 that is in stock and available for purchase. Click on the product to open its detail page. Confirm it is not sold out. ",
+        "Tags": [
+            "Flipkart",
+            "Shopping"
+        ]
+    },
+    {
+        "ID": 8,
+        "Task name": "Silver Rate in India",
+        "Task description": "Go to google and search for silver rate in India today.\r\n\r\n",
+        "Tags": [
+            "Silver"
+        ]
+    },
+    {
+        "ID": 9,
+        "Task name": "Google Searching",
+        "Task description": "Go to google and search for google",
+        "Tags": [
+            "Google"
+        ]
+    }
+]

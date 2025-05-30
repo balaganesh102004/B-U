@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</head>
+<body>
+    <!-- Loader Overlay -->
+    <div id="loader-overlay" class="loader-overlay">
+        <div class="loader-content">
+            <img src="{{ url_for('static', filename='Loading.gif') }}" alt="Loading..." class="loader-img">
+            <div id="loader-text" class="loader-text">Generating report...</div>
+        </div>
+    </div>
+
+    <div class="container" id="main-content">
+        <div class="header-row">
+            <div class="logo-stack">
+                <img src="{{ url_for('static', filename='cei-social.png') }}" alt="Logo" class="logo-img">
+                <img src="{{ url_for('static', filename='CEI-QA-RPA-Logo-Trans.png') }}" alt="Logo" class="logo-img">
+            </div>
+            <div class="top-navbar">
+    <a href="{{ url_for('index') }}" class="nav-link{% if request.path == '/' %} active{% endif %}" title="Home">
+        <span class="nav-icon">&#8962;</span>
+        <span>Home</span>
+    </a>
+    <a href="{{ url_for('settings') }}" class="nav-link{% if request.path.startswith('/settings') %} active{% endif %}" title="Settings">
+        <span class="nav-icon">&#9881;</span>
+        <span>Settings</span>
+    </a>
+    <a href="{{ url_for('history') }}" class="nav-link{% if request.path.startswith('/history') %} active{% endif %}" title="History">
+        <span class="nav-icon">&#128340;</span>
+        <span>History</span>
+    </a>
+</div>
+        </div>
+
+        <div class="actions-bar">
+            <input type="text" class="task-search" placeholder="Search tasks...">
+            <div class="actions-left">
+                <span id="selected-count" class="selected-count">Tasks Selected: 0</span>
+            </div>
+            <button class="run-button" id="run-selected-btn" type="button">Run Selected</button>
+            <button class="run-button" id="run-all-btn" type="button">Run All</button>
+            <div class="actions-right">
+                <button class="create-button" onclick="openCreateModal()">Create Task</button>
+            </div>
+        </div>
+
+        <!-- <div class="task-list">
+            {% for task in tasks %}
+            <div class="task-card">
+                <input type="checkbox" class="task-checkbox" value="{{ task['Task name'] }}">
+                <h3>{{ task["Task name"] }}</h3>
+                <p>{{ task["Task description"] }}</p>
+                <p><strong>Tags:</strong> {{ task["Tags"] | join(', ') }}</p>
+                <div class="task-card-buttons">
+                    <button class="edit-button"
+                        data-id="{{ task['ID'] }}"
+                        data-name="{{ task['Task name'] | escape }}"
+                        data-description="{{ task['Task description'] | escape }}"
+                        data-tags="{{ task['Tags'] | join(',') }}"
+                        onclick="openEditModalFromButton(this)">
+                        Edit
+                    </button>
+                    <button class="generate-button" type="button" onclick="generateTask(this)">Generate</button>
+                    <form action="/delete/{{ task['ID'] }}" method="POST" style="display:inline;">
+                        <button type="submit" class="delete-button">Delete</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div> -->
+        <div class="task-list">
+            {% for task in tasks %}
+            <div class="task-card">
+                <div class="card-select-indicator">
+                  <input type="checkbox" class="card-checkbox" id="card-{{ task['ID'] }}">
+                  <label for="card-{{ task['ID'] }}"></label>
+                </div>
+                <div class="task-card-content">
+                    <h3>{{ task["Task name"] }}</h3>
+                    <p>{{ task["Task description"] }}</p>
+                    <span class="tag">Tags: {{ task["Tags"] | join(', ') }}</span>
+                </div>
+                <div class="task-card-buttons-grouped">
+                    <div class="task-card-left">
+                        <button class="generate-button" type="button" onclick="generateTask('{{ task['ID'] }}')" title="Generate">
+                            Execute
+                        </button>
+                    </div>
+                    <div class="task-card-right">
+                        <button class="edit-button"
+                            data-id="{{ task['ID'] }}"
+                            data-name="{{ task['Task name'] | escape }}"
+                            data-description="{{ task['Task description'] | escape }}"
+                            data-tags="{{ task['Tags'] | join(',') }}"
+                            onclick="openEditModalFromButton(this)" title="Edit">
+                            <!-- Edit (Pencil) -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                              <path d="M12 20h9"/>
+                              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/>
+                            </svg>
+                            <span>Edit</span>
+                        </button>
+                        <form action="/delete/{{ task['ID'] }}" method="POST" style="display:inline;">
+                            <button type="submit" class="delete-button" title="Delete">
+                                <!-- Delete (Trash2) -->
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                  <polyline points="3 6 5 6 21 6"/>
+                                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+                                  <line x1="10" y1="11" x2="10" y2="17"/>
+                                  <line x1="14" y1="11" x2="14" y2="17"/>
+                                </svg>
+                                <span>Delete</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- <div class="side-nav">
+            <button class="nav-btn" onclick="window.location.href='/'" title="Home">
+                <span class="nav-icon">&#8962;</span>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-btn" onclick="window.location.href='/settings'" title="Settings">
+                <span class="nav-icon">&#9881;</span>
+                <span class="nav-label">Settings</span>
+            </button>
+            <button class="nav-btn" onclick="window.location.href='/history'" title="History">
+                <span class="nav-icon">&#128340;</span>
+                <span class="nav-label">History</span>
+            </button>
+        </div> -->
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeEditModal()">&times;</span>
+            <h2>Edit Task</h2>
+            <form id="edit-form" method="POST">
+                <input type="hidden" id="edit-task-id" name="task_id">
+
+                <label>Task Name</label>
+                <div class="field-group">
+                    <input type="text" id="edit-task-name" name="task_name" required>
+                </div>
+
+                <label>Task Description</label>
+                <div class="field-group">
+                    <textarea id="edit-task-description" name="task_description" rows="5" style="width:100%;" required></textarea>
+                </div>
+
+                <label>Tags</label>
+                <div class="field-group">
+                    <input type="text" id="edit-task-tags" name="tags" required>
+                </div>
+
+                <button type="submit" class="update-button">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Task Modal -->
+    <div id="create-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeCreateModal()">&times;</span>
+            <h2>Create Task</h2>
+            <form id="create-form" method="POST" action="/add">
+                <label>Task Name</label>
+                <div class="field-group">
+                    <input type="text" name="task_name" required>
+                </div>
+                <label>Task Description</label>
+                <div class="field-group">
+                    <textarea type="text" name="task_description" required rows="4"></textarea>
+                </div>
+                <label>Tags</label>
+                <div class="field-group">
+                    <input type="text" name="tags" placeholder="Comma-separated tags" required>
+                </div>
+                <button type="submit" class="update-button">Create</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="report-content" style="visibility:hidden;">
+        <!-- ... actual report ... -->
+    </div>
+
+    <script>
+    window.onload = function() {
+        document.getElementById('loader-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('report-content').style.visibility = 'visible';
+    };
+    </script>
+</body>
+</html>

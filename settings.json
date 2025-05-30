@@ -1,0 +1,12 @@
+{
+    "agent_llm": "gemini",
+    "agent_llm_args": {
+        "gemini_api_key": "123"
+    },
+    "planner_llm": "gemini",
+    "planner_llm_args": {
+        "gemini_api_key": "123"
+    },
+    "headless_mode": true,
+    "highlight_elements": true
+}
